@@ -11,10 +11,17 @@ List<List<int>> empty = [
   [2, 2, 2]
 ];
 
+List<List<bool>> move = [
+  [false, false, false],
+  [true, true, true],
+  [false, false, false]
+];
+
 List<int> newBallSelected = [-1, -1];
 List<int> oldBallSelected = [-1, -1];
 
 bool player = true;
 bool play = true;
+bool versus  = true;
 
 

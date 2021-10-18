@@ -1,6 +1,6 @@
 // ignore_for_file: curly_braces_in_flow_control_structures
 
-import 'package:fanorona/variable.dart';
+import 'package:fanorona/utilities/variable.dart';
 import 'package:fanorona/widgets/alias.dart';
 import 'package:flutter/material.dart';
 

@@ -1,6 +1,6 @@
 // ignore_for_file: curly_braces_in_flow_control_structures
 
-import 'package:fanorona/variable.dart';
+import 'package:fanorona/utilities/variable.dart';
 
 bool playerWin(int x, int y, int dx, int dy, List<List<int>> list){
   int playerWin = 0;
@@ -29,39 +29,39 @@ bool playerWin(int x, int y, int dx, int dy, List<List<int>> list){
   return false;
 }
 
-void transformEmpty(int number){
+void transformEmpty(int number, List<List<int>> list){
   for(int i= 0; i < 3; i++){
     for(int j = 0; j < 3; j++){
-      if(empty[i][j] == 0) empty[i][j] = number;
-      else if(empty[i][j] == 3) empty[i][j] = number;
+      if(list[i][j] == 0) list[i][j] = number;
+      else if(list[i][j] == 3) list[i][j] = number;
     }
   }
 }
 
-void buildAlias(int x, int y){
+void buildAlias(int x, int y, List<List<int>> list){
    if(x + 1 < empty.length){
-      if(empty[x+1][y] == 0) empty[x+1][y] = 3;
+      if(list[x+1][y] == 0) list[x+1][y] = 3;
     }
     if(x + 1 < empty.length && y + 1 < empty.length && x == y){
-      if(empty[x+1][y + 1] == 0) empty[x+1][y+1] = 3;
+      if(list[x+1][y + 1] == 0) list[x+1][y+1] = 3;
     }
     if(y + 1 < empty.length){
-      if(empty[x][y + 1] == 0) empty[x][y+1] = 3;
+      if(list[x][y + 1] == 0) list[x][y+1] = 3;
     }
     if(x - 1 >= 0 && y + 1 < empty.length && (x == y || (x == 2 && y == 0))){
-      if(empty[x-1][y+1] == 0) empty[x-1][y+1] = 3;
+      if(list[x-1][y+1] == 0) list[x-1][y+1] = 3;
     }
     if(x - 1 >= 0){
-      if(empty[x-1][y] == 0) empty[x-1][y] = 3;
+      if(list[x-1][y] == 0) list[x-1][y] = 3;
     }
     if(x - 1 >= 0 && y - 1 >= 0 && x == y){
-      if(empty[x-1][y-1] == 0) empty[x-1][y-1] = 3;
+      if(list[x-1][y-1] == 0) list[x-1][y-1] = 3;
     }
     if(y - 1 >= 0){
-      if(empty[x][y-1] == 0) empty[x][y-1] = 3;
+      if(list[x][y-1] == 0) list[x][y-1] = 3;
     }
     if(x + 1 < empty.length && y - 1 >= 0 && (x == y || (x == 0 && y == 2))){
-      if(empty[x+1][y-1] == 0) empty[x+1][y-1] = 3;
+      if(list[x+1][y-1] == 0) list[x+1][y-1] = 3;
     }
 } 
 bool gameOver(int i, int j, List <List <int>> list){
@@ -73,9 +73,9 @@ bool gameOver(int i, int j, List <List <int>> list){
 
 void reset(){
   isSelected1 = [
-  [false, false, false],
-  [false, false, false],
-  [false, false, false]
+    [false, false, false],
+    [false, false, false],
+    [false, false, false]
   ];
   empty = [
     [1, 1, 1],
@@ -83,8 +83,22 @@ void reset(){
     [2, 2, 2]
   ];
 
+  move = [
+    [false, false, false],
+    [false, false, false],
+    [false, false, false]
+  ];
+  
   newBallSelected = [-1, -1];
   oldBallSelected = [-1, -1];
 
   player = true;
+}
+
+bool playerMoved(List<List<bool>> moved ){
+  if((moved[0][0] && moved[0][1] && moved[0][2]) || (moved[2][0] && moved[2][1] && moved[2][2])){
+    return true;
+  }
+
+  return false;
 }

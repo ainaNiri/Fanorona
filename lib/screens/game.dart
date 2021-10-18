@@ -1,5 +1,9 @@
-import 'package:fanorona/functions.dart';
-import 'package:fanorona/variable.dart';
+import 'dart:math';
+
+import 'package:fanorona/utilities/functions.dart';
+import 'package:fanorona/models/player.dart';
+import 'package:fanorona/utilities/minimax.dart';
+import 'package:fanorona/utilities/variable.dart';
 import 'package:fanorona/widgets/ball.dart';
 import 'package:fanorona/widgets/rectangle.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +25,21 @@ class _GameState extends State<Game> {
         title: const Text("Fonorona", style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 3,
+        actions: [
+          PopupMenuButton(
+            icon: const Icon(Icons.more_vert, color: Colors.black),
+            itemBuilder: (context)=> <PopupMenuEntry> [
+                PopupMenuItem(
+                  onTap: (){
+                    setState(() {
+                      reset();
+                    }); 
+                  },
+                  child: const Text("Restart")
+                )
+            ]
+          )
+        ]
       ),
       body:Stack(
         children: [
@@ -55,11 +74,11 @@ class _GameState extends State<Game> {
                           //empty[oldBallSelected[0]][oldBallSelected[1]] = 0;
                           // oldBallSelected[0] = 0;
                           // oldBallSelected[1] = 0;
-                          isSelected1[i][j] = false;
-                          transformEmpty(0);
-                          Future.delayed(const Duration(milliseconds: 400), (){
+                          transformEmpty(0, empty);
+                          Future.delayed(const Duration(milliseconds: 500), (){
                             play = true;
-                            if(gameOver(i, j, empty)){
+                            if(gameOver(i, j, empty) && playerMoved(move)){
+                              versus = false;
                               if(player) {
                                 showWinDialog(context, "Player 2 win");
                               } else {
@@ -67,20 +86,35 @@ class _GameState extends State<Game> {
                               }
                             }
                           });
+                          Future.delayed(const Duration(milliseconds: 1200), (){
+                            if(versus){
+                              play = false;
+                              int temp = minimax(7, false, 7, empty, move);
+                              Future.delayed(const Duration(milliseconds: 500), (){
+                                play = true;
+                                if(gameOver((newBallSelected[1] - 180 )~/ 165, (newBallSelected[0] - 10)~/ 162, empty) && playerMoved(move)){
+                                  showWinDialog(context, "Computer win");
+                                }
+                              });
+                              setState(() {
+                                player = !player;
+                              });
+                            }
+                          });
                           setState(() {
                             player = !player;
-                          });
+                          });                         
                         },
                         onDragStart: (){
                           if(play){
-                            buildAlias(i, j);
+                            buildAlias(i, j, empty);
                             setState(() {
                               
                             });
                           }
                         },
                         onDragEnded: (){
-                          transformEmpty(0);
+                          transformEmpty(0, empty);
                           setState(() {
                             
                           });
@@ -100,13 +134,13 @@ class _GameState extends State<Game> {
                             if(isSelected1[i][j]){
                               oldBallSelected[0] = i;
                               oldBallSelected[1] = j;
-                              transformEmpty(0);
-                              buildAlias(i, j);
+                              transformEmpty(0, empty);
+                              buildAlias(i, j, empty);
                             }
                             else{
                               oldBallSelected[0] = 0;
                               oldBallSelected[1] = 0; 
-                              transformEmpty(0);
+                              transformEmpty(0, empty);
                             }
                             for(int x = 0; x < 3; x++){
                               for(int y = 0; y < 3; y++){
@@ -120,8 +154,9 @@ class _GameState extends State<Game> {
                           }
                         },
                       ),
-                      )
-                  ),)
+                    )
+                  ),
+                )
               ),
             ]
           ),
@@ -147,6 +182,7 @@ class _GameState extends State<Game> {
       ),
     );
   }
+  
   void showWinDialog(BuildContext context, String text){
     showDialog(
       context: context, 

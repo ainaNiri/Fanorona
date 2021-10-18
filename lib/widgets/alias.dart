@@ -1,4 +1,4 @@
-import 'package:fanorona/variable.dart';
+import 'package:fanorona/utilities/variable.dart';
 import 'package:flutter/material.dart';
 
 class Alias extends StatelessWidget {
@@ -17,6 +17,8 @@ class Alias extends StatelessWidget {
         onTap:(){
           newBallSelected[0] = dx.toInt();
           newBallSelected[1] = dy.toInt();
+          isSelected1[oldBallSelected[0]][oldBallSelected[1]] = true;
+          move[oldBallSelected[0]][oldBallSelected[1]] = true;
           play = false;
           onTapped!();
         },
