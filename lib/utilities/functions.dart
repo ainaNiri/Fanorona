@@ -93,11 +93,19 @@ void reset(){
   oldBallSelected = [-1, -1];
 
   player = true;
+  play = true;
 }
 
-bool playerMoved(List<List<bool>> moved ){
-  if((moved[0][0] && moved[0][1] && moved[0][2]) || (moved[2][0] && moved[2][1] && moved[2][2])){
-    return true;
+bool playerMoved(List<List<bool>> moved, bool mplayer){
+  if(mplayer == true){
+    if(moved[0][0] && moved[0][1] && moved[0][2]){
+      return true;
+    }
+  }
+  else{
+    if(moved[2][0] && moved[2][1] && moved[2][2]){
+      return true;
+    }
   }
 
   return false;

@@ -12,21 +12,34 @@ int minimax(int dim, bool mplayer, int node, List<List<int>> temp, List<List<boo
     return 1;
   }
 
-  for(int i = 0; i < empty.length; i++){
+   OUTER : for(int i = 0; i < empty.length; i++){
     for(int j = 0; j < empty.length; j++){
-      if( mplayer ?  list[i][j] == 1 : list[i][j] == 2){
+      if( (mplayer == true) ?  list[i][j] == 1 : list[i][j] == 2){
         buildAlias(i, j, list);
         for(int m = 0; m < empty.length; m++){
           for(int n = 0; n < empty.length; n++){
             buildAlias(i, j, list);
             if(list[m][n] == 3){
               list[i][j] = 0;
-              list[m][n] = mplayer ? 1 : 2;
               tempMoved[i][j] = true;
-              if(gameOver(m, n, list) && playerMoved(tempMoved)){
+              if(dim == node){
+                list[m][n] = 1;
+                if(gameOver(m, n, list) && playerMoved(tempMoved, !mplayer)){
+                  minMax[m*empty.length  + n][0] = 13;
+                }
+              }
+              list[m][n] = (mplayer == true) ? 1 : 2;
+              if(gameOver(m, n, list) && playerMoved(tempMoved, mplayer)){
+                if(node == dim){
+                  minMax[m*empty.length  + n][0] = 2*node;
+                  minMax[m*empty.length  + n][1] = i;
+                  minMax[m*empty.length  + n][2] = j;
+                  break OUTER;
+                }
+
                 minMax[m*empty.length  + n][0] = 2*node;
               }
-              else{
+              else if(minMax[m*empty.length  + n][0] == 0 || minMax[m*empty.length  + n][0] == 50){
                 transformEmpty(0, list);
                 node = node - 1;
                 minMax[m*empty.length  + n][0] = minimax(dim, !mplayer, node, list, tempMoved);

@@ -1,10 +1,8 @@
-import 'dart:math';
-
 import 'package:fanorona/utilities/functions.dart';
-import 'package:fanorona/models/player.dart';
 import 'package:fanorona/utilities/minimax.dart';
 import 'package:fanorona/utilities/variable.dart';
 import 'package:fanorona/widgets/ball.dart';
+import 'package:fanorona/widgets/drop_items.dart';
 import 'package:fanorona/widgets/rectangle.dart';
 import 'package:flutter/material.dart';
 
@@ -77,8 +75,8 @@ class _GameState extends State<Game> {
                           transformEmpty(0, empty);
                           Future.delayed(const Duration(milliseconds: 500), (){
                             play = true;
-                            if(gameOver(i, j, empty) && playerMoved(move)){
-                              versus = false;
+                            if(gameOver(i, j, empty) && playerMoved(move, !player)){
+                              versus = true;
                               if(player) {
                                 showWinDialog(context, "Player 2 win");
                               } else {
@@ -87,12 +85,12 @@ class _GameState extends State<Game> {
                             }
                           });
                           Future.delayed(const Duration(milliseconds: 1200), (){
-                            if(versus){
+                            if(!versus){
                               play = false;
                               int temp = minimax(7, false, 7, empty, move);
                               Future.delayed(const Duration(milliseconds: 500), (){
                                 play = true;
-                                if(gameOver((newBallSelected[1] - 180 )~/ 165, (newBallSelected[0] - 10)~/ 162, empty) && playerMoved(move)){
+                                if(gameOver((newBallSelected[1] - 180 )~/ 165, (newBallSelected[0] - 10)~/ 162, empty) && playerMoved(move, !player)){
                                   showWinDialog(context, "Computer win");
                                 }
                               });
@@ -177,6 +175,19 @@ class _GameState extends State<Game> {
                 Text("Player 2", style: TextStyle(color: !player ? Colors.black : const Color.fromRGBO(220, 220, 220, 1))),
               ],
             ),
+          ),
+          Positioned(
+            left: 150,
+            top: 30,
+            child: DropItem(
+              onModeChanged: (value){
+                value == 'versus' ? versus = true : versus = false;
+                reset(); 
+                setState((){
+
+                });
+              },
+            )
           ),
         ],
       ),
